@@ -11,3 +11,7 @@ Data Inspector is a powerful, intuitive database client application designed exc
 ## Getting Started
 
 Open a .db file using the folder icon and select the desired model to load its records.
+
+## Contributing
+
+This is a community-led effort, so we welcome as many contributors who can help. Read the [Contribution Guide](https://github.com/DataInspectorApp/Data-Inspector/blob/main/CONTRIBUTING.md) for more information.

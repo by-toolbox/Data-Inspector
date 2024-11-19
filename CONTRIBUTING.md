@@ -1,32 +1,16 @@
-# Contribute to CodeEdit
-
-Feel free to join and collaborate on our [Discord Server](https://discord.gg/vChUXVf9Em).
-
-> [!WARNING]
-> Please do not submit `localization` related pull requests at this time. 
-> Once we are ready to support more languages we will let you know with a guide on how to contribute here and on our [Discord Server](https://discord.gg/vChUXVf9Em).
-
-## Fork & Clone CodeEdit
-
-Tap the **"Fork"** button on the top of the site. After forking clone the forked repository to your Mac.
+# Contribute to Data Inspector
 
 ## Explore Issues
 
-Find issues from the [Issues tab](https://github.com/CodeEditApp/CodeEdit/issues) or from the To Do column in our [project](https://github.com/orgs/CodeEditApp/projects/3). If you find an issue you want to work on, please indicate it in the issue and/or attach a draft PR once available. An admin or maintainer will then assign the Issue and/or PR to you.
+Find issues from the [Issues tab](https://github.com/DataInspectorApp/Data-Inspector/issues). If you find an issue you want to work on, please indicate it in the issue and/or attach a draft PR once available. An admin or maintainer will then assign the Issue and/or PR to you.
 
 > [!IMPORTANT]
 > Please make sure to first comment under an issue or ask a maintainer to assign you to the issue before working on it. This helps prevent multiple people from working on the same
 > thing, which could result in your work not being merged. Additionally, some issues might be reserved for those with more in-depth knowledge of the codebase.
 
-## Getting Started
-
-Please read the [Getting Started](https://github.com/CodeEditApp/CodeEdit/wiki/Getting-Started) guide in our wiki.
-
-We also have a [troubleshooting guide](https://github.com/CodeEditApp/CodeEdit/wiki/Troubleshooting) that provides common resolutions.
-
 ## Code Style
 
-Please read our guide on [Code Style](https://github.com/CodeEditApp/CodeEdit/wiki/Code-Style) in our wiki.
+Please follow the [Google Swift Style Guide](https://google.github.io/swift/).
 
 ## Pull Request
 
@@ -43,7 +27,7 @@ The `PR` should include following information:
 
 ### Checks, Tests & Documentation
 
-Request a review from one of our admins @austincondiff, @lukepistrol, @MarcoCarnevali, @jasonplatts, @pkasila or maintainers @cstef, @linusS1, @RayZhao1998, @wdg.
+Request a review from one of our admins @armartinez
 
 > [!TIP]
 > If it is your first PR, an admin will need to request a review for you.
