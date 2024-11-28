@@ -9,7 +9,7 @@ import SwiftUI
 import SQLKit
 
 struct SidebarView: View {
-    @EnvironmentObject var manager: SQLManager
+    @EnvironmentObject var sqlManager: SQLManager
     
     @Binding var selection: Entity?
     
@@ -20,7 +20,7 @@ struct SidebarView: View {
             Section(header: Text("Models")) {
                 ForEach(entities, id: \.self) { entity in
                     HStack {
-                        Label(entity.name, systemImage: "square.stack.3d.up")
+                        Label(entity.name, systemImage: "tablecells")
                         Spacer()
                         Text("\(entity.rowCount)")
                     }
@@ -28,10 +28,11 @@ struct SidebarView: View {
             }
         }
         .listStyle(SidebarListStyle())
-        .onChange(of: self.manager.filePath) { _,_ in
+        .onChange(of: self.sqlManager.openFileURL) { _,_ in
             Task(priority: .userInitiated) {
                 do {
-                    self.entities = try await self.manager.getModels()
+                    self.entities = try await self.sqlManager.getModels()
+                    self.selection = self.entities.first
                 } catch {
                     fatalError(error.localizedDescription)
                 }

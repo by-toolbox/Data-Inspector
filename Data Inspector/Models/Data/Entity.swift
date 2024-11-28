@@ -1,5 +1,5 @@
 //
-//  Entities.swift
+//  Entity.swift
 //  Data Inspector
 //
 //  Created by Axel Martinez on 18/11/24.
