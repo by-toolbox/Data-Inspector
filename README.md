@@ -8,9 +8,16 @@ Data Inspector is a powerful, intuitive database client application designed exc
 > [!IMPORTANT]
 > Data Inspector is currently in development and not yet recommended for production use.
 
+<p align="center">
+  <a href="https://testflight.apple.com/join/6aXnHttz">
+      <img src="https://github.com/DataInspectorApp/Data-Inspector/blob/main/.github/testflight.png?raw=true" height="128">
+      <h1 align="center">Data Inspector</h1>
+  </a>
+</p>
+
 ## Getting Started
 
-Open a .db file using the folder icon and select the desired model to load its records.
+Open a database using the buttons on the main window select the desired model to load its records.
 
 ## Contributing
 

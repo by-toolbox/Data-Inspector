@@ -9,8 +9,15 @@ import SQLKit
 import SQLiteKit
 import SwiftUI
 
+enum SQLManagerError: Error {
+    case noConnection(message: String)
+    case invalidStatement
+    case invalidResultSet
+}
+
 class SQLManager: ObservableObject {
-    @Published var filePath: URL?
+    @Published var openFileURL: URL?
+    @Published var openAppInfo: AppInfo?
     
     var connection: SQLiteConnection? = nil
     var db: any SQLDatabase {
@@ -27,23 +34,24 @@ class SQLManager: ObservableObject {
         try? self.closeConnection()
     }
     
-    func connect(filePath: URL) async throws {
+    func connect(fileURL: URL, appInfo: AppInfo? = nil) async throws {
         if self.connection != nil {
             try closeConnection()
         }
         
         self.connection = try await SQLiteConnectionSource(
             configuration: .init(
-                storage: .file(path: filePath.absoluteString)
+                storage: .file(path: fileURL.absoluteString)
             ),
             threadPool: .singleton
         ).makeConnection(
-            logger: .init(label: "test"),
+            logger: .init(label: "DataInspector"),
             on: MultiThreadedEventLoopGroup.singleton.any()
         ).get()
         
         await MainActor.run {
-            self.filePath = filePath
+            self.openFileURL = fileURL
+            self.openAppInfo = appInfo
         }
     }
     
@@ -96,7 +104,15 @@ class SQLManager: ObservableObject {
                 }
                 
                 for column in columns {
-                    values[column] = try row.decode(column: column, as: String.self)
+                    if let value = try? row.decode(column: column, as: Int.self) {
+                        values[column] = value.description
+                    } else if let value = try? row.decode(column: column, as: Double.self) {
+                        values[column] = value.description
+                    } else if let value = try? row.decode(column: column, as: Bool.self) {
+                        values[column] = value.description
+                    } else if let value = try? row.decode(column: column, as: String.self) {
+                        values[column] = value
+                    }
                 }
                 
                 return Record(id: UUID(), values: values)
@@ -114,14 +130,16 @@ class SQLManager: ObservableObject {
         try self.connection?.close().wait()
     }
     
-    private func runQuery<T>(_ query: String, mapping: ((any SQLRow) throws -> T)? = nil) async throws -> [T] where T: Decodable {
+    private func runQuery<T>(_ query: String) async throws -> [T] where T: Decodable {
         let rows = try db.raw(SQLQueryString(query))
         
-        if let mapping = mapping {
-            return try await rows.all().map(mapping)
-        } else {
-            return try await rows.all(decoding: T.self)
-        }
+        return try await rows.all(decoding: T.self)
+    }
+    
+    private func runQuery<T>(_ query: String, mapping: (any SQLRow) throws -> T) async throws -> [T]  {
+        let rows = try db.raw(SQLQueryString(query))
+        
+        return try await rows.all().map(mapping)
     }
     
     private func runQuery<T>(_ query: String, column: String) async throws -> T? where T: Decodable {

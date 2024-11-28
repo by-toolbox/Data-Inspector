@@ -5,96 +5,86 @@
 //  Created by Axel Martinez on 13/11/24.
 //
 
-import UniformTypeIdentifiers
+import Combine
 import SwiftUI
 
 struct MainView: View {
-    let contentTypes: [UTType] = [.init(filenameExtension: "db")!]
+    @StateObject var sqlManager: SQLManager = .init()
+    @StateObject var simManager: SimulatorManager = .init()
     
-    @State var isSidebarOpen: NavigationSplitViewVisibility = .automatic
-    @State var isInspectorOpen: Bool = false
-    @State var isFileDialogOpen: Bool = false
-    @State var filePath: String?
-    @State var selectedEntity: Entity?
+    @Binding var isFileDialogOpen: Bool
+    @Binding var isSimulatorsDialogOpen: Bool
     
-    @StateObject var manager: SQLManager = .init()
+    @State private var sidebarVisibility: NavigationSplitViewVisibility = .detailOnly
+    @State private var selectedEntity: Entity?
+    @State private var searchText: String = ""
+    @State private var refreshRecords: PassthroughSubject<Void, Never> = .init()
     
     var body: some View {
-        NavigationSplitView(columnVisibility: $isSidebarOpen) {
+        NavigationSplitView(columnVisibility: $sidebarVisibility) {
             SidebarView(selection: $selectedEntity)
-                .environmentObject(manager)
+                .environmentObject(sqlManager)
         } detail: {
-            if let selectedEntity = selectedEntity {
-                ContentView(entity: selectedEntity)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .environmentObject(manager)
+            if let selectedEntity {
+                ContentView(
+                    searchText: $searchText,
+                    entity: selectedEntity,
+                    refreshRecords: refreshRecords
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .environmentObject(sqlManager)
+                .environmentObject(simManager)
+            } else if self.sqlManager.openFileURL != nil {
+                ContentUnavailableView(
+                    "Select a model",
+                    image: "table.check",
+                    description: Text("Select a model to view it's records.")
+                )
             } else {
-                ContentUnavailableView("Select a model", systemImage: "tablecells.fill")
+                ContentUnavailableView {
+                    Label {
+                        Text("Open database")
+                    } icon: {
+                        Image("database.search")
+                    }
+                } description: {
+                    Text("Open a database to load it's entities.")
+                } actions: {
+                    Button("Open file...") { self.isFileDialogOpen.toggle() }
+                    Button("Browse simulators...") { self.isSimulatorsDialogOpen.toggle() }
+                }
             }
         }
-        .inspector(isPresented: $isInspectorOpen) {
-            DetailView()
-        }
-        .fileImporter(
-            isPresented: $isFileDialogOpen,
-            allowedContentTypes: contentTypes,
-            onCompletion: openFile
-        )
         .navigationTitle("")
+        .searchable(text: $searchText)
         .toolbar {
             ToolbarItem(placement: .navigation) {
-                Button(action: {
-                    self.isFileDialogOpen.toggle()
-                }, label: {
-                    if let filePath = manager.filePath {
-                        Label {
-                            Text(filePath.lastPathComponent).fontWeight(.bold)
-                        } icon: {
-                            Image(systemName:  "server.rack")
-                        }
-                        .labelStyle(.titleAndIcon)
-                    } else {
-                        Image(systemName: "folder")
-                    }
-                })
+                FileMenu(
+                    sidebarVisibility: $sidebarVisibility,
+                    isFileDialogOpen: $isFileDialogOpen,
+                    isSimulatorsDialogOpen: $isSimulatorsDialogOpen,
+                    selectedEntity: $selectedEntity
+                )
+                .environmentObject(sqlManager)
+                .environmentObject(simManager)
             }
             
             ToolbarItem(placement: .primaryAction) {
-                Button(action: {}) {
-                    Image(systemName: "magnifyingglass")
-                }
-            }
-            
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    self.isInspectorOpen.toggle()
-                }, label: {
-                    Image(systemName: "sidebar.right")
+                Button("", systemImage: "arrow.clockwise", action: {
+                    refreshRecords.send()
                 })
+                .disabled(self.selectedEntity == nil)
             }
-        }
-    }
-    
-    func openFile(file: Result<URL, any Error>) {
-        switch file {
-        case .success(let filePath):
-            Task(priority: .userInitiated)  {
-                do {
-                    if filePath.startAccessingSecurityScopedResource() {
-                        try await self.manager.connect(filePath: filePath)
-                        
-                        filePath.stopAccessingSecurityScopedResource()
-                    }
-                } catch {
-                    fatalError("Error fetching models: \(error)")
-                }
-            }
-        case .failure(let error):
-            fatalError(error.localizedDescription)
         }
     }
 }
 
 #Preview {
-    MainView()
+    @Previewable @State var isFileDialogOpen = false
+    @Previewable  @State var isSimulatorsDialogOpen = false
+    
+    MainView(
+        isFileDialogOpen: $isFileDialogOpen,
+        isSimulatorsDialogOpen: $isSimulatorsDialogOpen
+    )
 }

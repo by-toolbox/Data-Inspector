@@ -1,0 +1,12 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "symbols" : [
+    {
+      "filename" : "custom.square.stack.3d.up.badge.xmark.svg",
+      "idiom" : "universal"
+    }
+  ]
+}
