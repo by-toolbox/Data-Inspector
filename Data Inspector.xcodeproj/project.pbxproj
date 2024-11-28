@@ -162,7 +162,6 @@
 			isa = PBXGroup;
 			children = (
 				86DE4CFF25ABAAAA00AEA5A5 /* Data Inspector */,
-				77443B3F2CE7249800B11F4D /* Frameworks */,
 				86DE4CFE25ABAAAA00AEA5A5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -185,6 +184,7 @@
 				77443AF12CE4692100B11F4D /* Supporting Files */,
 				86DE4D0625ABAAAC00AEA5A5 /* Preview Content */,
 				86DE4D0025ABAAAA00AEA5A5 /* DataInspectorApp.swift */,
+				77443B3F2CE7249800B11F4D /* Frameworks */,
 			);
 			path = "Data Inspector";
 			sourceTree = "<group>";
