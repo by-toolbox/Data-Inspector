@@ -15,6 +15,12 @@
 		77443B5A2CE72BD800B11F4D /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77443B4B2CE72B9F00B11F4D /* Record.swift */; };
 		77443B672CE75CCF00B11F4D /* SQLManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77443B642CE75CCF00B11F4D /* SQLManager.swift */; };
 		77443B712CEBA81500B11F4D /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77443B702CEBA81300B11F4D /* Entity.swift */; };
+		775F3D662D82D84D00BB69B1 /* SQLiteColumnDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 775F3D652D82D84900BB69B1 /* SQLiteColumnDefinition.swift */; };
+		775F3D682D83753500BB69B1 /* SQLiteDataType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 775F3D672D83752E00BB69B1 /* SQLiteDataType.swift */; };
+		775F3D6C2D83799F00BB69B1 /* CellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 775F3D6B2D83799900BB69B1 /* CellView.swift */; };
+		7785E9392D7986AC0034B732 /* SQLManager+Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7785E9382D7986A30034B732 /* SQLManager+Fetch.swift */; };
+		7785E93B2D7986BB0034B732 /* SQLManager+Edit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7785E93A2D7986B30034B732 /* SQLManager+Edit.swift */; };
+		7785E9432D8034840034B732 /* SQLiteTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7785E9422D8034820034B732 /* SQLiteTable.swift */; };
 		779620922CF48E0600C10399 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 779620912CF48E0100C10399 /* AppInfo.swift */; };
 		7799D15A2CF5C31900EDA97B /* SimulatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7799D1592CF5C30A00EDA97B /* SimulatorManager.swift */; };
 		7799D15F2CF617BE00EDA97B /* IconInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7799D15E2CF617B900EDA97B /* IconInfo.swift */; };
@@ -26,6 +32,7 @@
 		77B8DF732CEF6EC5007E790D /* SimulatorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B8DF722CEF6EBF007E790D /* SimulatorsView.swift */; };
 		77B8DF752CEF6FE2007E790D /* SimulatorFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B8DF742CEF6FCB007E790D /* SimulatorFilesView.swift */; };
 		77B8DF782CEF7011007E790D /* Simulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B8DF772CEF700D007E790D /* Simulator.swift */; };
+		77D896D62D80B728007DF9C6 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77D896D52D80B722007DF9C6 /* Property.swift */; };
 		86DE4D0125ABAAAA00AEA5A5 /* DataInspectorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE4D0025ABAAAA00AEA5A5 /* DataInspectorApp.swift */; };
 		86DE4D0325ABAAAA00AEA5A5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE4D0225ABAAAA00AEA5A5 /* MainView.swift */; };
 		86DE4D0525ABAAAC00AEA5A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86DE4D0425ABAAAC00AEA5A5 /* Assets.xcassets */; };
@@ -38,6 +45,12 @@
 		77443B4B2CE72B9F00B11F4D /* Record.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
 		77443B642CE75CCF00B11F4D /* SQLManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLManager.swift; sourceTree = "<group>"; };
 		77443B702CEBA81300B11F4D /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
+		775F3D652D82D84900BB69B1 /* SQLiteColumnDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteColumnDefinition.swift; sourceTree = "<group>"; };
+		775F3D672D83752E00BB69B1 /* SQLiteDataType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteDataType.swift; sourceTree = "<group>"; };
+		775F3D6B2D83799900BB69B1 /* CellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellView.swift; sourceTree = "<group>"; };
+		7785E9382D7986A30034B732 /* SQLManager+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SQLManager+Fetch.swift"; sourceTree = "<group>"; };
+		7785E93A2D7986B30034B732 /* SQLManager+Edit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SQLManager+Edit.swift"; sourceTree = "<group>"; };
+		7785E9422D8034820034B732 /* SQLiteTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteTable.swift; sourceTree = "<group>"; };
 		779620912CF48E0100C10399 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		7799D1592CF5C30A00EDA97B /* SimulatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorManager.swift; sourceTree = "<group>"; };
 		7799D15E2CF617B900EDA97B /* IconInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconInfo.swift; sourceTree = "<group>"; };
@@ -49,7 +62,8 @@
 		77B8DF722CEF6EBF007E790D /* SimulatorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorsView.swift; sourceTree = "<group>"; };
 		77B8DF742CEF6FCB007E790D /* SimulatorFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatorFilesView.swift; sourceTree = "<group>"; };
 		77B8DF772CEF700D007E790D /* Simulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simulator.swift; sourceTree = "<group>"; };
-		86DE4CFD25ABAAAA00AEA5A5 /* DataInspector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataInspector.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		77D896D52D80B722007DF9C6 /* Property.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		86DE4CFD25ABAAAA00AEA5A5 /* Data Inspector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Data Inspector.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		86DE4D0025ABAAAA00AEA5A5 /* DataInspectorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataInspectorApp.swift; sourceTree = "<group>"; };
 		86DE4D0225ABAAAA00AEA5A5 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		86DE4D0425ABAAAC00AEA5A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -84,8 +98,9 @@
 		77443AFA2CE48E3600B11F4D /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				7799D16A2CF7240500EDA97B /* Labels */,
+				7799D1602CF63ED800EDA97B /* AppLabel.swift */,
 				77443AF22CE4723200B11F4D /* ContentView.swift */,
+				775F3D6B2D83799900BB69B1 /* CellView.swift */,
 				77B8DF6E2CEE1265007E790D /* FileMenu.swift */,
 				86DE4D0225ABAAAA00AEA5A5 /* MainView.swift */,
 				77443AFB2CE48EE000B11F4D /* SidebarView.swift */,
@@ -107,6 +122,7 @@
 			children = (
 				7799D1682CF706E600EDA97B /* Data */,
 				7799D1692CF706FA00EDA97B /* Filesystem */,
+				775F3D6A2D83761300BB69B1 /* SQLite */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -116,8 +132,20 @@
 			children = (
 				7799D1592CF5C30A00EDA97B /* SimulatorManager.swift */,
 				77443B642CE75CCF00B11F4D /* SQLManager.swift */,
+				7785E93A2D7986B30034B732 /* SQLManager+Edit.swift */,
+				7785E9382D7986A30034B732 /* SQLManager+Fetch.swift */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		775F3D6A2D83761300BB69B1 /* SQLite */ = {
+			isa = PBXGroup;
+			children = (
+				775F3D672D83752E00BB69B1 /* SQLiteDataType.swift */,
+				775F3D652D82D84900BB69B1 /* SQLiteColumnDefinition.swift */,
+				7785E9422D8034820034B732 /* SQLiteTable.swift */,
+			);
+			path = SQLite;
 			sourceTree = "<group>";
 		};
 		7799D1682CF706E600EDA97B /* Data */ = {
@@ -126,6 +154,7 @@
 				77443B702CEBA81300B11F4D /* Entity.swift */,
 				77443B4A2CE72B9F00B11F4D /* Model.swift */,
 				77443B4B2CE72B9F00B11F4D /* Record.swift */,
+				77D896D52D80B722007DF9C6 /* Property.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -141,14 +170,6 @@
 			path = Filesystem;
 			sourceTree = "<group>";
 		};
-		7799D16A2CF7240500EDA97B /* Labels */ = {
-			isa = PBXGroup;
-			children = (
-				7799D1602CF63ED800EDA97B /* AppLabel.swift */,
-			);
-			path = Labels;
-			sourceTree = "<group>";
-		};
 		7799D16B2CF72D2F00EDA97B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -161,7 +182,8 @@
 		86DE4CF425ABAAAA00AEA5A5 = {
 			isa = PBXGroup;
 			children = (
-				86DE4CFF25ABAAAA00AEA5A5 /* DataInspector */,
+				86DE4CFF25ABAAAA00AEA5A5 /* Data Inspector */,
+				77443B3F2CE7249800B11F4D /* Frameworks */,
 				86DE4CFE25ABAAAA00AEA5A5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -169,12 +191,12 @@
 		86DE4CFE25ABAAAA00AEA5A5 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				86DE4CFD25ABAAAA00AEA5A5 /* DataInspector.app */,
+				86DE4CFD25ABAAAA00AEA5A5 /* Data Inspector.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		86DE4CFF25ABAAAA00AEA5A5 /* DataInspector */ = {
+		86DE4CFF25ABAAAA00AEA5A5 /* Data Inspector */ = {
 			isa = PBXGroup;
 			children = (
 				7799D16B2CF72D2F00EDA97B /* Extensions */,
@@ -184,9 +206,8 @@
 				77443AF12CE4692100B11F4D /* Supporting Files */,
 				86DE4D0625ABAAAC00AEA5A5 /* Preview Content */,
 				86DE4D0025ABAAAA00AEA5A5 /* DataInspectorApp.swift */,
-				77443B3F2CE7249800B11F4D /* Frameworks */,
 			);
-			path = DataInspector;
+			path = "Data Inspector";
 			sourceTree = "<group>";
 		};
 		86DE4D0625ABAAAC00AEA5A5 /* Preview Content */ = {
@@ -200,9 +221,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		86DE4CFC25ABAAAA00AEA5A5 /* DataInspector */ = {
+		86DE4CFC25ABAAAA00AEA5A5 /* Data Inspector */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 86DE4D0D25ABAAAC00AEA5A5 /* Build configuration list for PBXNativeTarget "DataInspector" */;
+			buildConfigurationList = 86DE4D0D25ABAAAC00AEA5A5 /* Build configuration list for PBXNativeTarget "Data Inspector" */;
 			buildPhases = (
 				86DE4CF925ABAAAA00AEA5A5 /* Sources */,
 				86DE4CFA25ABAAAA00AEA5A5 /* Frameworks */,
@@ -212,9 +233,9 @@
 			);
 			dependencies = (
 			);
-			name = DataInspector;
+			name = "Data Inspector";
 			productName = Finder;
-			productReference = 86DE4CFD25ABAAAA00AEA5A5 /* DataInspector.app */;
+			productReference = 86DE4CFD25ABAAAA00AEA5A5 /* Data Inspector.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -225,7 +246,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1610;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					86DE4CFC25ABAAAA00AEA5A5 = {
 						CreatedOnToolsVersion = 12.3;
@@ -249,7 +270,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				86DE4CFC25ABAAAA00AEA5A5 /* DataInspector */,
+				86DE4CFC25ABAAAA00AEA5A5 /* Data Inspector */,
 			);
 		};
 /* End PBXProject section */
@@ -270,6 +291,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77D896D62D80B728007DF9C6 /* Property.swift in Sources */,
+				7785E93B2D7986BB0034B732 /* SQLManager+Edit.swift in Sources */,
 				77443B712CEBA81500B11F4D /* Entity.swift in Sources */,
 				77443B672CE75CCF00B11F4D /* SQLManager.swift in Sources */,
 				779620922CF48E0600C10399 /* AppInfo.swift in Sources */,
@@ -279,14 +302,19 @@
 				77443B5A2CE72BD800B11F4D /* Record.swift in Sources */,
 				77B8DF752CEF6FE2007E790D /* SimulatorFilesView.swift in Sources */,
 				7799D1612CF63EDC00EDA97B /* AppLabel.swift in Sources */,
+				7785E9392D7986AC0034B732 /* SQLManager+Fetch.swift in Sources */,
 				7799D1672CF703AC00EDA97B /* FileInfo.swift in Sources */,
 				77B8DF6F2CEE126A007E790D /* FileMenu.swift in Sources */,
 				77B8DF732CEF6EC5007E790D /* SimulatorsView.swift in Sources */,
 				77443AFC2CE48EE500B11F4D /* SidebarView.swift in Sources */,
+				7785E9432D8034840034B732 /* SQLiteTable.swift in Sources */,
 				86DE4D0325ABAAAA00AEA5A5 /* MainView.swift in Sources */,
 				86DE4D0125ABAAAA00AEA5A5 /* DataInspectorApp.swift in Sources */,
 				77B8DF782CEF7011007E790D /* Simulator.swift in Sources */,
 				7799D16D2CF72D3B00EDA97B /* URL+ContentTypes.swift in Sources */,
+				775F3D682D83753500BB69B1 /* SQLiteDataType.swift in Sources */,
+				775F3D6C2D83799F00BB69B1 /* CellView.swift in Sources */,
+				775F3D662D82D84D00BB69B1 /* SQLiteColumnDefinition.swift in Sources */,
 				77443B582CE72BD300B11F4D /* Model.swift in Sources */,
 				7799D15F2CF617BE00EDA97B /* IconInfo.swift in Sources */,
 			);
@@ -299,6 +327,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -364,6 +393,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -424,16 +454,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = "DataInspector/Supporting Files/Data Inspector.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Data Inspector/Supporting Files/Data Inspector.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"DataInspector/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Data Inspector/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "DataInspector/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Data Inspector/Supporting Files/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Data Inspector";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -441,7 +471,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = app.datainspector.DataInspector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -454,16 +484,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = "DataInspector/Supporting Files/Data Inspector.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Data Inspector/Supporting Files/Data Inspector.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"DataInspector/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Data Inspector/Preview Content\"";
 				DEVELOPMENT_TEAM = ZTW69M5NDR;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "DataInspector/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Data Inspector/Supporting Files/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Data Inspector";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -471,7 +501,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = app.datainspector.DataInspector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -490,7 +520,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		86DE4D0D25ABAAAC00AEA5A5 /* Build configuration list for PBXNativeTarget "DataInspector" */ = {
+		86DE4D0D25ABAAAC00AEA5A5 /* Build configuration list for PBXNativeTarget "Data Inspector" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				86DE4D0E25ABAAAC00AEA5A5 /* Debug */,

@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-struct MainView: View {
+struct MainView<T: SQLiteTable>: View {
     @StateObject var sqlManager: SQLManager = .init()
     @StateObject var simManager: SimulatorManager = .init()
     
@@ -16,30 +16,25 @@ struct MainView: View {
     @Binding var isSimulatorsDialogOpen: Bool
     
     @State private var sidebarVisibility: NavigationSplitViewVisibility = .detailOnly
-    @State private var selectedEntity: Entity?
+    @State private var selectedTable: T?
     @State private var searchText: String = ""
     @State private var refreshRecords: PassthroughSubject<Void, Never> = .init()
     
     var body: some View {
         NavigationSplitView(columnVisibility: $sidebarVisibility) {
-            SidebarView(selection: $selectedEntity)
+            SidebarView(selection: $selectedTable)
+                .toolbar(removing: selectedTable == nil ? .sidebarToggle : nil)
                 .environmentObject(sqlManager)
         } detail: {
-            if let selectedEntity {
+            if let selectedTable = selectedTable {
                 ContentView(
                     searchText: $searchText,
-                    entity: selectedEntity,
+                    dataObject: selectedTable,
                     refreshRecords: refreshRecords
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .environmentObject(sqlManager)
                 .environmentObject(simManager)
-            } else if self.sqlManager.openFileURL != nil {
-                ContentUnavailableView(
-                    "Select a model",
-                    image: "table.check",
-                    description: Text("Select a model to view it's records.")
-                )
             } else {
                 ContentUnavailableView {
                     Label {
@@ -48,7 +43,7 @@ struct MainView: View {
                         Image("database.search")
                     }
                 } description: {
-                    Text("Open a database to load it's entities.")
+                    Text("Open a database to load its content.")
                 } actions: {
                     Button("Open file...") { self.isFileDialogOpen.toggle() }
                     Button("Browse simulators...") { self.isSimulatorsDialogOpen.toggle() }
@@ -62,8 +57,7 @@ struct MainView: View {
                 FileMenu(
                     sidebarVisibility: $sidebarVisibility,
                     isFileDialogOpen: $isFileDialogOpen,
-                    isSimulatorsDialogOpen: $isSimulatorsDialogOpen,
-                    selectedEntity: $selectedEntity
+                    isSimulatorsDialogOpen: $isSimulatorsDialogOpen
                 )
                 .environmentObject(sqlManager)
                 .environmentObject(simManager)
@@ -73,7 +67,7 @@ struct MainView: View {
                 Button("", systemImage: "arrow.clockwise", action: {
                     refreshRecords.send()
                 })
-                .disabled(self.selectedEntity == nil)
+                .disabled(self.selectedTable == nil)
             }
         }
     }

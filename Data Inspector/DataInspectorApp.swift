@@ -11,9 +11,9 @@ import SwiftUI
 struct DataInspectorApp: App {
     @State var isFileDialogOpen = false
     @State var isSimulatorsDialogOpen = false
-    
+
     var body: some Scene {
-        WindowGroup {
+        Window("Main", id: "main") {
             MainView(
                 isFileDialogOpen: $isFileDialogOpen,
                 isSimulatorsDialogOpen: $isSimulatorsDialogOpen
@@ -23,7 +23,7 @@ struct DataInspectorApp: App {
             }
         }
         .commands {
-            CommandGroup(replacing: .newItem) {
+            CommandGroup(before: .newItem) {
                 Button("Open file...") { self.isFileDialogOpen.toggle() }
                 Button("Browse Simulators...") { self.isSimulatorsDialogOpen.toggle() }
             }

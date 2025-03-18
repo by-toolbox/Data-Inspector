@@ -75,7 +75,11 @@ struct SimulatorsView: View {
                 Button("Open") {
                     if let selectedFileInfo {
                         Task(priority: .userInitiated) {
-                            try? await self.openFile(fileInfo: selectedFileInfo)
+                            do {
+                                try await self.openFile(fileInfo: selectedFileInfo)
+                            } catch {
+                                fatalError(error.localizedDescription)
+                            }
                         }
                     }
                 }
@@ -127,7 +131,7 @@ struct SimulatorsView: View {
                         if isHomeBookmarkInvalid {
                             self.isFolderDialogOpen.toggle()
                         } else {
-                            self.simulators = self.simManager.loadSimulators(from: homeURL)
+                            self.simulators = simManager.loadSimulators(from: homeURL)
                             self.sidebarVisibility = .all
                         }
                     }

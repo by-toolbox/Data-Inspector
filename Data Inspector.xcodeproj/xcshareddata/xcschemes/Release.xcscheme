@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1610"
+   LastUpgradeVersion = "1620"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "86DE4CFC25ABAAAA00AEA5A5"
-               BuildableName = "DataInspector.app"
-               BlueprintName = "DataInspector"
+               BuildableName = "Data Inspector.app"
+               BlueprintName = "Data Inspector"
                ReferencedContainer = "container:Data Inspector.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "86DE4CFC25ABAAAA00AEA5A5"
-            BuildableName = "DataInspector.app"
-            BlueprintName = "DataInspector"
+            BuildableName = "Data Inspector.app"
+            BlueprintName = "Data Inspector"
             ReferencedContainer = "container:Data Inspector.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "86DE4CFC25ABAAAA00AEA5A5"
-            BuildableName = "DataInspector.app"
-            BlueprintName = "DataInspector"
+            BuildableName = "Data Inspector.app"
+            BlueprintName = "Data Inspector"
             ReferencedContainer = "container:Data Inspector.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
