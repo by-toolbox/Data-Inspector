@@ -18,3 +18,5 @@ Open a database using the buttons on the main window select the desired model to
 ## Contributing
 
 This is a community-led effort, so we welcome as many contributors who can help. Read the [Contribution Guide](https://github.com/DataInspectorApp/Data-Inspector/blob/main/CONTRIBUTING.md) for more information.
+
+<a href="https://www.buymeacoffee.com/armartinez" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee" height="41" width="174"></a>
