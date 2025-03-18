@@ -11,7 +11,6 @@ Data Inspector is a powerful, intuitive database client application designed exc
 <p align="center">
   <a href="https://testflight.apple.com/join/6aXnHttz">
       <img src="https://github.com/DataInspectorApp/Data-Inspector/blob/main/.github/testflight.png?raw=true" height="128">
-      <h1 align="center">Data Inspector</h1>
   </a>
 </p>
 
