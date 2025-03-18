@@ -7,6 +7,7 @@
 
 import UniformTypeIdentifiers
 import SwiftUI
+import SQLiteNIO
 
 struct FileMenu: View {
     @Environment(\.dismiss) var dismiss
@@ -16,9 +17,9 @@ struct FileMenu: View {
     @Binding var sidebarVisibility: NavigationSplitViewVisibility
     @Binding var isFileDialogOpen: Bool
     @Binding var isSimulatorsDialogOpen: Bool
-    @Binding var selectedEntity: Entity?
     
-    @State private var homeURL: URL?
+    @State private var error: SQLiteError? = nil
+    @State private var showAlert = false
     
     var body: some View {
         HStack(spacing: 5) {
@@ -83,8 +84,12 @@ struct FileMenu: View {
             SimulatorsView(sidebarVisibility: $sidebarVisibility)
                 .frame(width:800, height: 600)
         })
-        .onDisappear {
-            self.homeURL?.stopAccessingSecurityScopedResource()
+        .alert(isPresented: $showAlert, error: error) { _ in
+            Button("OK") {
+                self.showAlert = false
+            }
+        } message: { error in
+            Text(error.recoverySuggestion ?? "Try opening a different file")
         }
     }
     
@@ -99,21 +104,24 @@ struct FileMenu: View {
             if let homeBookmark = UserDefaults.standard.data(forKey: "homeBookmark") {
                 var isHomeBookmarkInvalid = false
                 
-                self.homeURL = try URL(
+                let homeURL = try URL(
                     resolvingBookmarkData: homeBookmark,
                     options: .withSecurityScope,
                     bookmarkDataIsStale: &isHomeBookmarkInvalid
                 )
                 
-                if !isHomeBookmarkInvalid, let homeURL, homeURL.startAccessingSecurityScopedResource() {
+                if !isHomeBookmarkInvalid, homeURL.startAccessingSecurityScopedResource() {
                     do {
                         try await self.sqlManager.connect(
                             fileURL: fileURL,
                             appInfo: self.sqlManager.openAppInfo
                         )
-                    } catch {
-                        fatalError("Error loading file: \(error)")
+                    } catch let error as SQLiteError {
+                        self.error = error
+                        self.showAlert = true
                     }
+                    
+                    homeURL.stopAccessingSecurityScopedResource()
                 }
             }
         }
@@ -131,12 +139,13 @@ struct FileMenu: View {
                         
                         fileURL.stopAccessingSecurityScopedResource()
                     }
-                } catch {
-                    fatalError("Error loading file: \(error)")
+                } catch let error as SQLiteError {
+                    self.error = error
+                    self.showAlert = true
                 }
             }
         case .failure(let error):
-            fatalError(error.localizedDescription)
+            print(error.localizedDescription)
         }
     }
 }

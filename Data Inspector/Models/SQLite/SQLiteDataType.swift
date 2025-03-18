@@ -20,15 +20,22 @@ extension SQLiteDataType: Decodable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         let stringValue = try container.decode(String.self)
+        let trimmedValue: String
         
-        switch stringValue {
+        if let range = stringValue.range(of: "(") {
+            trimmedValue = String(stringValue[..<range.lowerBound])
+        } else {
+            trimmedValue = stringValue
+        }
+
+        switch trimmedValue {
         case "SMALLINT":
             self = .smallint
         case "INTEGER":
             self = .int
         case "BIGINT", "FLOAT":
             self = .float
-        case "TEXT", "VARCHAR":
+        case "TEXT", "VARCHAR", "NVARCHAR":
             self = .text
         case "REAL":
             self = .real

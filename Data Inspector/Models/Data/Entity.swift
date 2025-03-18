@@ -5,7 +5,24 @@
 //  Created by Axel Martinez on 18/11/24.
 //
 
-struct Entity: Codable, Hashable {
+class Entity: SQLiteTable {
     let name: String
-    let rowCount: Int
+    let properties: [Property]
+    
+    init(
+        name: String,
+        properties: [Property] = [],
+        tableName: String,
+        columns: Dictionary<String, SQLiteColumnDefinition>,
+        recordCount: Int = 0
+    ) {
+        self.name = name
+        self.properties = properties
+        
+        super.init(tableName: tableName, columns: columns, recordCount: recordCount)
+    }
+    
+    required init(from decoder: any Decoder) throws {
+        fatalError("init(from:) has not been implemented")
+    }
 }

@@ -110,11 +110,12 @@ class SimulatorManager: ObservableObject {
             let bundleFolders = try FileManager.default.contentsOfDirectory(
                 at: simulatorURL.appendingPathComponent("data/Containers/Bundle/Application"),
                 includingPropertiesForKeys: nil
-            )
+            ).filter(\.hasDirectoryPath)
+            
             let dataFolders = try FileManager.default.contentsOfDirectory(
                 at: simulatorURL.appendingPathComponent("data/Containers/Data/Application"),
                 includingPropertiesForKeys: nil
-            )
+            ).filter(\.hasDirectoryPath)
             
             for bundleFolder in bundleFolders {
                 let appIdentifier = try getAppIdentifier(from: bundleFolder)
@@ -130,9 +131,8 @@ class SimulatorManager: ObservableObject {
                 var bundleDisplayName: String?
                 var bundleIconInfo: IconInfo?
                 
-                let infoPlistURL = appFolder.appendingPathComponent("Info.plist")
-                if let infoPlist = readPlist(from: infoPlistURL) {
-                    bundleDisplayName = infoPlist["CFBundleDisplayName"] as? String
+                if let infoPlist = readPlist(from: appFolder.appendingPathComponent("Info.plist")) {
+                    bundleDisplayName = infoPlist["CFBundleDisplayName"] as? String ?? infoPlist["CFBundleName"] as? String
                     bundleIconInfo = extractAppIconsInfo(from: infoPlist)
                 }
 

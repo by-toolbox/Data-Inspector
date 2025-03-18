@@ -7,7 +7,18 @@
 
 import Foundation
 
-struct Record: Hashable, Codable, Identifiable {
+struct Record: Identifiable, Equatable {
     var id: UUID
-    var values = Dictionary<String, String>()
+    var rowId: Int?
+    var values: Dictionary<String, Any>
+    
+    static func == (lhs: Record, rhs: Record) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+extension Record: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
