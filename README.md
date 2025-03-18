@@ -18,3 +18,5 @@ Open a database using the buttons on the main window select the desired model to
 ## Contributing
 
 This is a community-led effort, so we welcome as many contributors who can help. Read the [Contribution Guide](https://github.com/DataInspectorApp/Data-Inspector/blob/main/CONTRIBUTING.md) for more information.
+
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="armartinez" data-color="#5F7FFF" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
