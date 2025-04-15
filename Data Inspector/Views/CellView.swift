@@ -5,43 +5,46 @@
 //  Created by Axel Martinez on 13/3/25.
 //
 
+import SQLiteKit
 import SwiftUI
 
 struct CellView: View {
-    var id: UUID
-    var property: String
-    var type: Any.Type
-    var updateProperty: (UUID, String, Any) -> Void
+    let value: Value
     
-    @State var text: String
-    
-    init(id: UUID, property: String, value: Any, updateProperty: @escaping (UUID, String, Any) -> Void) {
-        self.id = id
-        self.property = property
-        self.type = Swift.type(of: value)
-        self.updateProperty = updateProperty
-        
+    var body: some View {
         switch value {
-        case let string as String:
-            self._text = State(initialValue: string)
-        case let int as Int:
-            self._text = State(initialValue: int.description)
+        case .array(let array):
+            Text("[\(displayArray(array))]")
         default:
-            self._text = State(initialValue: "")
+            content(from: value)
         }
     }
     
-    var body: some View {
-        TextField("", text: $text, onCommit: {
-            switch type {
-            case is Int.Type:
-                if let int = Int(text) {
-                    updateProperty(id, property, int)
-                }
-            default:
-                updateProperty(id, property, text)
-            }
+    func displayArray(_ array: [Value]) -> Text {
+        return array.map({content(from: $0)}).reduce(Text(""), {
+            if $0 == Text("") { return $1 }
+            return Text("\($0),\($1)")
         })
-        .padding(.vertical, 5)
+    }
+                                              
+    func content(from innerValue: Value) -> Text {
+        switch innerValue {
+        case .text(let text):
+            return Text(text)
+                .foregroundStyle(Color(XcodeThemeColors.string))
+        case .integer(let integer):
+            return Text(integer.description)
+                .foregroundStyle(Color(XcodeThemeColors.number))
+        case .null:
+            return Text("nil")
+                .foregroundStyle(Color(XcodeThemeColors.keyword))
+                .fontWeight(.semibold)
+        case .image(let image):
+            return Text(image.description)
+        case .timestamp(let date):
+            return Text(date.ISO8601Format())
+        default:
+            return Text("")
+        }
     }
 }

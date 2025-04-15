@@ -8,61 +8,39 @@
 import Foundation
 import SQLiteKit
 import SwiftData
+import CoreData
 
-extension SQLManager {
+extension SQLiteManager {
     func getModels() async throws -> [Model] {
-        let query = """
-                    SELECT Z_NAME FROM Z_PRIMARYKEY
-                    ORDER BY Z_NAME;
-                    """
-    
-        let tableNames = try await runQuery(query) { row in
-            try row.decode(column: "Z_NAME", as: String.self)
-        }
-        
-        var models: [Model] = []
-        
-        for tableName in tableNames {
-            if !SystemTables.allCases.contains(where: { $0.rawValue == tableName }) {
-                models.append(try await getModel(tableName))
-            }
-        }
-        
-        return models
+        return try await getEntities() as [Model]
     }
     
-    func getEntities() async throws -> [Entity] {
-        let query = """
-                    SELECT Z_NAME FROM Z_PRIMARYKEY
-                    ORDER BY Z_NAME;
-                    """
+    func getEntities<T: Entity>() async throws -> [T] {
+        let tableNames = try await getTableNames()
         
-        let tableNames = try await runQuery(query) { row in
-            try row.decode(column: "Z_NAME", as: String.self)
-        }
+        var entities: [T] = []
         
-        var entities: [Entity] = []
-        
-        for tableName in tableNames {
-            if !SystemTables.allCases.contains(where: { $0.rawValue == tableName }) {
-                entities.append(try await getEntity(tableName))
+        for entity in model?.entities ?? [] {
+            // Fetch SQLite table
+            guard let name = entity.name,
+                let tableName = tableNames.first(where: {
+                $0.contains(name.uppercased())
+            }) else {
+                continue
             }
+            
+            entities.append(try await getEntity(
+                entity,
+                tables: tableNames,
+                tableName: tableName
+            ))
         }
         
         return entities
     }
     
     func getTables() async throws -> [SQLiteTable] {
-        let query = """
-                    SELECT name FROM sqlite_master
-                    WHERE type='table'
-                    AND name NOT LIKE 'sqlite_%'
-                    ORDER BY name;
-                    """
-        
-        let tableNames = try await runQuery(query) { row in
-            try row.decode(column: "name", as: String.self)
-        }
+        let tableNames = try await getTableNames()
         
         var tables: [SQLiteTable] = []
         
@@ -74,114 +52,97 @@ extension SQLManager {
     }
     
     func getRecords(from model: Model) async throws -> [Record] {
-        let query = "SELECT ROWID as rowId,* FROM \(model.tableName)"
-        return try await runQuery(query, mapping: { row in
-            return try Record(row, from: model)
-        })
+        return try await getRecords(from: model as SQLiteTable)
     }
     
     func getRecords(from entity: Entity) async throws -> [Record] {
-        let query = "SELECT ROWID as rowId,* FROM \(entity.tableName)"
-        return try await runQuery(query, mapping: { row in
-            return try Record(row, from: entity)
-        })
+        return try await getRecords(from: entity as SQLiteTable)
     }
     
     func getRecords(from table: SQLiteTable) async throws -> [Record] {
-        let query = "SELECT ROWID as rowId,* FROM \(table.tableName)"
+        let query = "SELECT ROWID as rowId,* FROM \(table.name)"
+        
         return try await runQuery(query, mapping: { row in
-            return try Record(row, from: table)
+            return try Record(row, from: table.columns)
         })
     }
     
-    private func getModel(_ name: String) async throws -> Model {
-        let tableName = "Z\(name.uppercased())"
-        let columns = try await getColumns(from: tableName)
-        let recordCount = try await getRecordCount(tableName)
-        let properties = columns.compactMap({ column -> Property? in
-            if SystemColumns.allCases.contains(where: { $0.rawValue == column.key }) {
-                return nil
-            }
-            
-            var propertyName = column.key
-            propertyName.removeFirst()
-            
-            return Property(name: propertyName.lowercased(), columnName: column.key)
-        })
+    private func getTableNames() async throws -> [String] {
+        let query = """
+                    SELECT name FROM sqlite_master
+                    WHERE type='table'
+                    AND name NOT LIKE 'sqlite_%'
+                    ORDER BY name;
+                    """
         
-        return Model(
-            name: name,
-            properties: properties,
-            tableName: tableName,
-            columns: columns,
-            recordCount: recordCount
-        )
+        return try await runQuery(query) { row in
+            try row.decode(column: "name", as: String.self)
+        }
     }
     
-    private func getEntity(_ name: String) async throws -> Entity {
-        let tableName = "Z\(name.uppercased())"
-        let columns = try await getColumns(from: tableName)
+    private func getEntity<T: Entity>(_ description: NSEntityDescription, tables: [String], tableName: String) async throws -> T {
+        let tableColumns = try await getColumns(from: tableName)
         let recordCount = try await getRecordCount(tableName)
-        let properties = columns.compactMap({ column -> Property? in
-            if SystemColumns.allCases.contains(where: { $0.rawValue == column.key }) {
-                return nil
+        
+        var properties = [String: Property]()
+        
+        for attribute in description.attributesByName {
+            guard let column = tableColumns.first(where: {
+                var columnName = $0.name.lowercased()
+                columnName.removeFirst()
+                return attribute.key.lowercased() == columnName
+            }) else {
+                continue
             }
             
-            var propertyName = column.key
-            propertyName.removeFirst()
-            
-            return Property(
-                name: propertyName.lowercased(),
-                columnName: column.key
-            )
-        })
+            properties[attribute.value.name] = Property(attribute: attribute.value, column: column)
+        }
+
+        guard let name = description.name else {
+            throw URLError(.badURL, userInfo: [NSLocalizedDescriptionKey : "Missing entity name"])
+        }
         
-        return Entity(
-            name: name,
+        return T(
+            displayName: name,
             properties: properties,
             tableName: tableName,
-            columns: columns,
+            tableColumns: tableColumns,
             recordCount: recordCount
         )
     }
     
     private func getTable(_ name: String) async throws -> SQLiteTable {
-        let tableName = name
-        let columns = try await getColumns(from: tableName)
-        let recordCount = try await getRecordCount(tableName)
+        let columns = try await getColumns(from: name)
+        let recordCount = try await getRecordCount(name)
         
         return SQLiteTable(
-            tableName: tableName,
+            name: name,
             columns: columns,
             recordCount: recordCount
         )
     }
     
-    private func getColumns(from tableName: String) async throws -> [String: SQLiteColumnDefinition] {
+    private func getColumns(from tableName: String) async throws -> [SQLiteColumn] {
         let query = "PRAGMA table_info(\(tableName));"
         
-        return try await self.runQuery(query, handler: { rows in
-            var result: Dictionary<String, SQLiteColumnDefinition> = [:]
-
-            for row in rows {
-                do  {
-                    let name = try row.decode(column: "name", as: String.self)
-                    let dataType = try row.decode(column: "type", as: String.self)
-                    let notNull = try row.decode(column: "notnull", as: Bool.self)
-                    let pk = try row.decode(column: "pk", as: Int.self)
-                    
-                    result[name] = SQLiteColumnDefinition(
-                        name: name,
-                        datatype: dataType,
-                        notNull: notNull,
-                        pk: pk
-                    )
-                } catch {
-                    print("Can't decode table \(tableName): \(error.localizedDescription)")
-                }
+        return try await self.runQuery(query, mapping: { row in
+            do  {
+                let name = try row.decode(column: "name", as: String.self)
+                let dataType = try row.decode(column: "type", as: String.self)
+                let notNull = try row.decode(column: "notnull", as: Bool.self)
+                let pk = try row.decode(column: "pk", as: Int.self)
+                
+                return SQLiteColumn(
+                    name: name,
+                    datatype: dataType,
+                    notNull: notNull,
+                    pk: pk
+                )
+            } catch {
+                print("Can't decode table \(tableName): \(error.localizedDescription)")
             }
             
-            return result
+            return nil
         })
     }
     

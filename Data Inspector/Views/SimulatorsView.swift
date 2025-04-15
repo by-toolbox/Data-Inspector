@@ -10,7 +10,7 @@ import SwiftUI
 struct SimulatorsView: View {
     @Environment(\.dismiss) var dismiss
     
-    @EnvironmentObject var sqlManager: SQLManager
+    @EnvironmentObject var sqlManager: SQLiteManager
     @EnvironmentObject var simManager: SimulatorManager
     
     @Binding var sidebarVisibility: NavigationSplitViewVisibility
@@ -55,6 +55,7 @@ struct SimulatorsView: View {
                     }
                 }
             }
+            .frame(minWidth: 250)
         } detail: {
             if let selectedSimulatorURL {
                 SimulatorFilesView(

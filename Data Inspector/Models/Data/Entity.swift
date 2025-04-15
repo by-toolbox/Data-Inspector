@@ -6,20 +6,20 @@
 //
 
 class Entity: SQLiteTable {
-    let name: String
-    let properties: [Property]
+    let displayName: String
+    let properties: [String: Property]
     
-    init(
-        name: String,
-        properties: [Property] = [],
+    required init(
+        displayName: String,
+        properties: [String: Property],
         tableName: String,
-        columns: Dictionary<String, SQLiteColumnDefinition>,
+        tableColumns: [SQLiteColumn],
         recordCount: Int = 0
     ) {
-        self.name = name
+        self.displayName = displayName
         self.properties = properties
         
-        super.init(tableName: tableName, columns: columns, recordCount: recordCount)
+        super.init(name: tableName, columns: tableColumns, recordCount: recordCount)
     }
     
     required init(from decoder: any Decoder) throws {

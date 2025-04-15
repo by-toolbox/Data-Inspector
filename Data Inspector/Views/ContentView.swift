@@ -10,8 +10,8 @@ import SQLiteKit
 import SwiftUI
 
 struct ContentView<T: SQLiteTable>: View {
-    @EnvironmentObject var sqlManager: SQLManager
-    
+    @EnvironmentObject var sqlManager: SQLiteManager
+
     @Binding var searchText: String
     
     @State private var isLoading = false
@@ -21,17 +21,20 @@ struct ContentView<T: SQLiteTable>: View {
     @State private var error: SQLiteError? = nil
     @State private var showAlert = false
     
+    let tableFont: NSFont = .monospacedSystemFont(ofSize: 13, weight: .regular)
+    
     var dataObject: T
-    var refreshRecords: PassthroughSubject<Void, Never>
+    var refresh: PassthroughSubject<Void, Never>
     
     var filteredRecords: [Record] {
         return records.filter({ record in
             self.searchText.isEmpty || record.values.contains(where: {
-                if let value = $0.value as? String {
-                    return value.contains(self.searchText)
+                switch($0.value){
+                case .text(let text):
+                    return text.contains(self.searchText)
+                default:
+                    return false
                 }
-                
-                return false
             })
         })
     }
@@ -72,24 +75,22 @@ struct ContentView<T: SQLiteTable>: View {
                     .background(.white)
                     
                     Table(filteredRecords, selection: $selectedRecords) {
-                        TableColumnForEach(properties, id:\.self) { property in
+                        TableColumnForEach(properties, id:\.name) { property in
                             TableColumn(
-                                Text(property.name)
-                                    .font(.headline)
-                                    .foregroundStyle(.blue)
+                                Text("""
+                                \(Text(property.name).foregroundColor(XcodeThemeColors.property)): \
+                                \(Text(property.type).foregroundColor(XcodeThemeColors.type))
+                                """)
                             ) { record in
-                                if let value = record.values[property.columnName] {
-                                    CellView(
-                                        id: record.id,
-                                        property: property.name,
-                                        value: value,
-                                        updateProperty: updateProperty
-                                    )
-                                  
+                                if let value = record.values[property.column.name] {
+                                    CellView(value: value)
+                                        .padding(.vertical, 5)
                                 }
                             }
+                            .width(min: property.displayName.estimatedWidth(using: tableFont))
                         }
                     }
+                    .font(Font(tableFont))
                     .alternatingRowBackgrounds(.disabled)
                     .onKeyPress { event in
                         switch event.key {
@@ -103,9 +104,10 @@ struct ContentView<T: SQLiteTable>: View {
                 }
             }
         }
-        .onAppear(perform: refresh)
-        .onChange(of: dataObject, refresh)
-        .onReceive(refreshRecords, perform: refresh) .alert(isPresented: $showAlert, error: error) { _ in
+        .onAppear(perform: refreshRecords)
+        .onChange(of: dataObject, refreshRecords)
+        .onReceive(refresh, perform: refreshRecords)
+        .alert(isPresented: $showAlert, error: error) { _ in
             Button("OK") {
                 self.showAlert = false
             }
@@ -114,22 +116,23 @@ struct ContentView<T: SQLiteTable>: View {
         }
     }
     
-    func refresh() {
+    func refreshRecords() {
         Task(priority: .userInitiated) {
             do {
                 self.isLoading = true
                 
                 if let model = dataObject as? Model {
-                    self.records = try await sqlManager.getModelRecords(from: model)
-                    self.properties = model.properties.sorted { $0.name < $1.name }
+                    self.properties = model.properties.map(\.value).sorted { $0.name < $1.name }
+                    self.records = try await sqlManager.getRecords(from: model)
                 } else if let entity = dataObject as? Entity {
-                    self.records = try await sqlManager.getEntityRecords(from: entity)
-                    self.properties = entity.properties.sorted { $0.name < $1.name }
+                    self.properties = entity.properties.map(\.value).sorted { $0.name < $1.name }
+                    self.records = try await sqlManager.getRecords(from: entity)
                 } else {
-                    self.records = try await sqlManager.getTableRecords(from: dataObject)
                     self.properties = dataObject.columns.map {
-                        Property(name: $0.key, columnName: $0.key)
+                        Property(column: $0)
                     }.sorted { $0.name < $1.name }
+                    
+                    self.records = try await sqlManager.getRecords(from: dataObject)
                 }
                 
                 self.isLoading = false
@@ -141,14 +144,14 @@ struct ContentView<T: SQLiteTable>: View {
     }
     
     func removeRecords() {
-        if selectedRecords.isEmpty { return }
+        guard selectedRecords.isEmpty else { return }
         
         Task(priority: .userInitiated) {
             do {
-                let recordsToRemove = records.filter { selectedRecords.contains($0.id) }
+                let recordsToDelete = records.filter { selectedRecords.contains($0.id) }
                 
-                // Remove records from the database
-                try await sqlManager.removeRecords(recordsToRemove, from: dataObject)
+                // Delete records from the database
+                try await sqlManager.deleteRecords(recordsToDelete, from: dataObject)
                 
                 await MainActor.run {
                     // Remove the records from the local array
@@ -164,19 +167,18 @@ struct ContentView<T: SQLiteTable>: View {
         }
     }
     
-    func updateProperty(from id: UUID, propertyName: String, to newValue: Any) {
+    func updateRecord(id: UUID, columnName: String, to newValue: Value) {
         // Find the index of the current record
-        if var record = records.first(where: { $0.id == id }),
-           let property = properties.first(where: { $0.name == propertyName }){
+        if var record = records.first(where: { $0.id == id }) {
             Task {
                 // Update the value the fetched record
-                record.values[property.columnName] = newValue
+                record.values[columnName] = newValue
                 
                 // Update in database
                 do {
-                    try await sqlManager.updateProperty(
-                        property,
-                        on: record,
+                    try await sqlManager.updateRecord(
+                        record,
+                        for: columnName,
                         from: dataObject
                     )
                 } catch let error as SQLiteError {
@@ -190,9 +192,9 @@ struct ContentView<T: SQLiteTable>: View {
 
 #Preview {
     @Previewable @State var searchText: String = ""
-    @Previewable @State var refreshRecords: PassthroughSubject<Void, Never> = .init()
+    @Previewable @State var refresh: PassthroughSubject<Void, Never> = .init()
     
-    let table = SQLiteTable(tableName: "tst", columns: [:], recordCount: 0)
+    let table = SQLiteTable(name: "test", columns: [], recordCount: 0)
     
-    ContentView(searchText: $searchText, dataObject: table, refreshRecords: refreshRecords)
+    ContentView(searchText: $searchText, dataObject: table,  refresh: refresh)
 }
