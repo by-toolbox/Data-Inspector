@@ -6,7 +6,7 @@
 //
 
 extension SQLManager {
-    func addRecord(_ record: Record, to table: SQLiteTable) async throws {
+    func addRecord(_ record: Record,to table: SQLiteTable) async throws {
         // Prepare SQL query
         let properties = table.columns.map { $0.key }
         
@@ -20,7 +20,7 @@ extension SQLManager {
         try await runQuery(query)
     }
     
-    func removeRecords(_ records: [Record], from table: SQLiteTable) async throws {
+    func removeRecords(_ records: [Record],from table: SQLiteTable) async throws {
         var statements: [String] = []
         
         for record in records {
@@ -65,15 +65,15 @@ extension SQLManager {
     
     private func buildSetClause(for columns: [SQLiteColumnDefinition], in record: Record) -> String {
         let columns = columns.filter {
-            $0.type == .text || $0.type == .int
+            $0.datatype == .text || $0.datatype == .integer
         }
         
         return columns.compactMap {
-            switch $0.type {
+            switch $0.storageClass {
             case .text:
                 guard let value = record.values[$0.name] as? String else { return "" }
                 return "\($0.name) = '\(value)'"
-            case .int:
+            case .integer:
                 guard let value = record.values[$0.name] as? Int else { return "" }
                 return "\($0.name) = \(value)"
             default:
