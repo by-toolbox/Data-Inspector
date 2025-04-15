@@ -78,7 +78,6 @@
 		86DE4D0225ABAAAA00AEA5A5 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		86DE4D0425ABAAAC00AEA5A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		86DE4D0725ABAAAC00AEA5A5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		86DE4D0925ABAAAC00AEA5A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		86DE4D0A25ABAAAC00AEA5A5 /* Data Inspector.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Data Inspector.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,7 +98,6 @@
 			isa = PBXGroup;
 			children = (
 				86DE4D0425ABAAAC00AEA5A5 /* Assets.xcassets */,
-				86DE4D0925ABAAAC00AEA5A5 /* Info.plist */,
 				86DE4D0A25ABAAAC00AEA5A5 /* Data Inspector.entitlements */,
 			);
 			path = "Supporting Files";
@@ -491,7 +489,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Data Inspector/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "Data Inspector/Supporting Files/Info.plist";
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Data Inspector";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -499,7 +497,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = app.datainspector.DataInspector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -521,7 +519,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Data Inspector/Preview Content\"";
 				DEVELOPMENT_TEAM = ZTW69M5NDR;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = "Data Inspector/Supporting Files/Info.plist";
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Data Inspector";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -529,7 +527,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = app.datainspector.DataInspector;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
