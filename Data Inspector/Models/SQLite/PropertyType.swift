@@ -1,13 +1,13 @@
 //
-//  SQLiteDataType.swift
+//  DataType.swift
 //  Data Inspector
 //
 //  Created by Axel Martinez on 13/3/25.
 //
 
-public enum SQLiteDataType {
+public enum PropertyType {
     case smallint
-    case int
+    case integer
     case float
     case real
     case text
@@ -16,7 +16,7 @@ public enum SQLiteDataType {
     case timestamp
 }
 
-extension SQLiteDataType: Decodable {
+extension PropertyType: Decodable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         let stringValue = try container.decode(String.self)
@@ -32,7 +32,7 @@ extension SQLiteDataType: Decodable {
         case "SMALLINT":
             self = .smallint
         case "INTEGER":
-            self = .int
+            self = .integer
         case "BIGINT", "FLOAT":
             self = .float
         case "TEXT", "VARCHAR", "NVARCHAR":

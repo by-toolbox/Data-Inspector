@@ -8,7 +8,7 @@
 import SQLiteKit
 import SwiftUI
 
-enum SQLManagerError: LocalizedError {
+enum SQLiteManagerError: LocalizedError {
     case noConnection(message: String)
 }
 
@@ -30,7 +30,7 @@ enum SystemColumns: String, CaseIterable {
     case Z_OPT
 }
 
-class SQLManager: ObservableObject {
+class SQLiteManager: ObservableObject {
     @Published var openFileURL: URL?
     @Published var openAppInfo: AppInfo?
     @Published var openAsSQLite = false
@@ -43,7 +43,7 @@ class SQLManager: ObservableObject {
                 return connection.sql()
             }
             
-            throw SQLManagerError.noConnection(message: "No database connection available")
+            throw SQLiteManagerError.noConnection(message: "No database connection available")
         }
     }
     
