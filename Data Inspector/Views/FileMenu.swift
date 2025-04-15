@@ -12,7 +12,7 @@ import SQLiteNIO
 struct FileMenu: View {
     @Environment(\.dismiss) var dismiss
     
-    @EnvironmentObject var sqlManager: SQLManager
+    @EnvironmentObject var sqlManager: SQLiteManager
     
     @Binding var sidebarVisibility: NavigationSplitViewVisibility
     @Binding var isFileDialogOpen: Bool
@@ -23,40 +23,29 @@ struct FileMenu: View {
     
     var body: some View {
         HStack(spacing: 5) {
-            Menu {
-                Button("Open File…") { self.isFileDialogOpen.toggle() }
-                Button("Browse Simulators…") { self.isSimulatorsDialogOpen.toggle() }
-            } label: {
-                HStack {
-                    if let appInfo = self.sqlManager.openAppInfo {
-                        if let appIcon = self.sqlManager.openAppInfo?.icon {
-                            Label {
-                                Text("App Options")
-                            } icon: {
-                                Image(nsImage: appIcon)
-                            }
-                        }
-                        
-                        Text(appInfo.name)
-                    } else if let fileURL = self.sqlManager.openFileURL {
-                        Label {
-                            Text("Foder Options")
-                        } icon: {
-                            Image(systemName: "folder")
-                        }
-                        
-                        Text(fileURL.deletingLastPathComponent().lastPathComponent)
-                    }
-                }
-                .padding(5)
+            if let appInfo = sqlManager.openAppInfo,
+               let appIcon = appInfo.icon {
+                menuView(text: appInfo.name, content: {
+                    Button("Open File…") { self.isFileDialogOpen.toggle() }
+                    Button("Browse Simulators…") { self.isSimulatorsDialogOpen.toggle() }
+                }, label: { text in
+                    Label { Text(text) } icon: { Image(nsImage: appIcon) }
+                })
+            } else if let fileURL = sqlManager.openFileURL {
+                menuView(text: fileURL.deletingLastPathComponent().lastPathComponent, content: {
+                    Button("Open File…") { self.isFileDialogOpen.toggle() }
+                    Button("Browse Simulators…") { self.isSimulatorsDialogOpen.toggle() }
+                }, label: {
+                    Label($0, systemImage: "folder")
+                        .labelStyle(.titleAndIcon)
+                })
             }
-            .menuIndicator(.hidden)
             
-            if let fileURL = self.sqlManager.openFileURL {
+            if let fileURL = sqlManager.openFileURL {
                 Image(systemName: "chevron.forward")
                 
-                if self.sqlManager.openAppInfo?.fileURLs.count ?? 0 > 1 {
-                    Menu {
+                if sqlManager.openAppInfo?.fileURLs.count ?? 0 > 1 {
+                    menuView(text: fileURL.lastPathComponent, content: {
                         if let fileURLs = self.sqlManager.openAppInfo?.fileURLs {
                             ForEach(fileURLs, id: \.self) { fileURL in
                                 if fileURL != self.sqlManager.openFileURL {
@@ -66,12 +55,13 @@ struct FileMenu: View {
                                 }
                             }
                         }
-                    } label: {
-                        fileView(fileURL.lastPathComponent)
-                    }
-                    .menuIndicator(.hidden)
+                    }, label: {
+                        Label($0, systemImage: "square.stack.3d.up")
+                            .labelStyle(.titleAndIcon)
+                    })
                 } else {
-                    fileView(fileURL.lastPathComponent)
+                    Label(fileURL.lastPathComponent, systemImage: "square.stack.3d.up")
+                        .labelStyle(.titleAndIcon)
                 }
             }
         }
@@ -94,9 +84,22 @@ struct FileMenu: View {
     }
     
     @ViewBuilder
-    private func fileView(_ fileName: String) -> some View {
-        Image(systemName: "square.stack.3d.up")
-        Text(fileName)
+    private func menuView(
+        text: String,
+        @ViewBuilder content: @escaping () -> some View,
+        @ViewBuilder label: @escaping (_ text: String) -> some View
+    ) -> some View {
+        Menu(content: content, label: {
+            HStack {
+                label(text)
+            }
+            .padding(5)
+        })
+        .frame(width: text.estimatedWidth(
+            using: .systemFont(ofSize: 13),
+            padding: 40
+        ), height: 20)
+        .menuIndicator(.hidden)
     }
     
     private func loadFile(from fileURL: URL) {

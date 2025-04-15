@@ -9,7 +9,7 @@ import Combine
 import SwiftUI
 
 struct MainView<T: SQLiteTable>: View {
-    @StateObject var sqlManager: SQLManager = .init()
+    @StateObject var sqlManager: SQLiteManager = .init()
     @StateObject var simManager: SimulatorManager = .init()
     
     @Binding var isFileDialogOpen: Bool
@@ -18,7 +18,7 @@ struct MainView<T: SQLiteTable>: View {
     @State private var sidebarVisibility: NavigationSplitViewVisibility = .detailOnly
     @State private var selectedTable: T?
     @State private var searchText: String = ""
-    @State private var refreshRecords: PassthroughSubject<Void, Never> = .init()
+    @State private var refreshContent: PassthroughSubject<Void, Never> = .init()
     
     var body: some View {
         NavigationSplitView(columnVisibility: $sidebarVisibility) {
@@ -30,9 +30,8 @@ struct MainView<T: SQLiteTable>: View {
                 ContentView(
                     searchText: $searchText,
                     dataObject: selectedTable,
-                    refreshRecords: refreshRecords
+                    refresh: refreshContent
                 )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .environmentObject(sqlManager)
                 .environmentObject(simManager)
             } else {
@@ -65,7 +64,7 @@ struct MainView<T: SQLiteTable>: View {
             
             ToolbarItem(placement: .primaryAction) {
                 Button("", systemImage: "arrow.clockwise", action: {
-                    refreshRecords.send()
+                    refreshContent.send()
                 })
                 .disabled(self.selectedTable == nil)
             }

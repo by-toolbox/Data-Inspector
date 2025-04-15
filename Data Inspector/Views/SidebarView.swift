@@ -6,25 +6,27 @@
 //
 
 import SwiftUI
-import SQLKit
+import SQLiteKit
 
 struct SidebarView<T: SQLiteTable>: View {
-    @EnvironmentObject var sqlManager: SQLManager
+    @EnvironmentObject var sqlManager: SQLiteManager
     
     @Binding var selection: T?
     
     @State private var dataObjects = [T]()
+    @State private var error: SQLiteError? = nil
+    @State private var showAlert = false
     
     var body: some View {
         VStack {
             List(selection: $selection) {
                 switch(sqlManager.displayMode) {
                 case .SwiftData:
-                    if let models = dataObjects as? [Model] {
+                    if let models = dataObjects as? [Model], !models.isEmpty {
                         Section(header: Text("Models")) {
                             ForEach(models, id: \.self) { model in
                                 HStack {
-                                    Label(model.name, systemImage: "cube")
+                                    Label(model.displayName, systemImage: "swiftdata")
                                     Spacer()
                                     Text("\(model.recordCount)")
                                 }
@@ -32,11 +34,11 @@ struct SidebarView<T: SQLiteTable>: View {
                         }
                     }
                 case .CoreData:
-                    if let entities = dataObjects as? [Entity] {
+                    if let entities = dataObjects as? [Entity], !entities.isEmpty {
                         Section(header: Text("Entities")) {
                             ForEach(entities, id: \.self) { entity in
                                 HStack {
-                                    Label(entity.name, systemImage: "e.square")
+                                    Label(entity.displayName, systemImage: "e.square")
                                     Spacer()
                                     Text("\(entity.recordCount)")
                                 }
@@ -44,12 +46,14 @@ struct SidebarView<T: SQLiteTable>: View {
                         }
                     }
                 default:
-                    Section(header: Text("Tables")) {
-                        ForEach(dataObjects, id: \.self) { dataObject in
-                            HStack {
-                                Label(dataObject.tableName, systemImage: "tablecells")
-                                Spacer()
-                                Text("\(dataObject.recordCount)")
+                    if !dataObjects.isEmpty {
+                        Section(header: Text("Tables")) {
+                            ForEach(dataObjects, id: \.self) { dataObject in
+                                HStack {
+                                    Label(dataObject.name, systemImage: "tablecells")
+                                    Spacer()
+                                    Text("\(dataObject.recordCount)")
+                                }
                             }
                         }
                     }
@@ -57,24 +61,38 @@ struct SidebarView<T: SQLiteTable>: View {
             }
             .listStyle(SidebarListStyle())
         }
-        .onChange(of: self.sqlManager.openFileURL) { _,_ in
+        .alert(isPresented: $showAlert, error: error) { _ in
+            Button("OK") {
+                self.showAlert = false
+            }
+        } message: { error in
+            Text(error.recoverySuggestion ?? "Try opening a different file")
+        }
+        .onChange(of: sqlManager.openFileURL) { _,_ in
             Task(priority: .userInitiated) {
                 do {
                     switch(sqlManager.displayMode) {
                     case .SwiftData:
-                        self.dataObjects = try await self.sqlManager.getModels() as! [T]
+                        if let models = try await self.sqlManager.getModels() as? [T] {
+                            self.dataObjects = models
+                        }
                         break
                     case .CoreData:
-                        self.dataObjects = try await self.sqlManager.getEntities() as! [T]
+                        if let entities = try await self.sqlManager.getEntities() as? [T] {
+                            self.dataObjects = entities
+                        }
                         break
                     default:
-                        self.dataObjects = try await self.sqlManager.getTables() as! [T]
+                        if let tables = try await self.sqlManager.getTables() as? [T] {
+                            self.dataObjects = tables
+                        }
                         break
                     }
-                  
+                    
                     self.selection = self.dataObjects.first
-                } catch {
-                    print(error.localizedDescription)
+                } catch let error as SQLiteError {
+                    self.error = error
+                    self.showAlert = true
                 }
             }
         }
@@ -82,7 +100,7 @@ struct SidebarView<T: SQLiteTable>: View {
 }
 
 #Preview {
-    @Previewable let manager = SQLManager()
+    @Previewable let manager = SQLiteManager()
     @Previewable @State var selection: Entity?
     
     SidebarView(selection: $selection).environmentObject(manager)

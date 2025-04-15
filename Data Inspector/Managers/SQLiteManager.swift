@@ -18,23 +18,14 @@ enum DisplayMode: String {
     case SQLite
 }
 
-enum SystemTables: String, CaseIterable {
-    case CHANGE
-    case TRANSACTION
-    case TRANSACTIONSTRING
-}
-
-enum SystemColumns: String, CaseIterable {
-    case Z_PK
-    case Z_ENT
-    case Z_OPT
-}
-
 class SQLiteManager: ObservableObject {
     @Published var openFileURL: URL?
     @Published var openAppInfo: AppInfo?
     @Published var openAsSQLite = false
     @Published var displayMode: DisplayMode = .SQLite
+    
+    var metadata : [String: Any]?
+    var model: NSManagedObjectModel?
     
     var connection: SQLiteConnection? = nil
     var db: any SQLDatabase {
@@ -66,6 +57,13 @@ class SQLiteManager: ObservableObject {
             on: MultiThreadedEventLoopGroup.singleton.any()
         ).get()
         
+        if fileURL.pathExtension == "store" {
+            try await loadModelCacheAndMetadata(from: fileURL)
+        } else {
+            self.metadata = nil
+            self.model = nil
+        }
+
         try await setDisplayMode()
         
         await MainActor.run {
@@ -88,10 +86,10 @@ class SQLiteManager: ObservableObject {
         return try await rows.all(decoding: T.self)
     }
     
-    func runQuery<T>(_ query: String, mapping: (any SQLRow) throws -> T) async throws -> [T]  {
+    func runQuery<T>(_ query: String, mapping: (any SQLRow) throws -> T?) async throws -> [T]  {
         let rows = try db.raw(SQLQueryString(query))
         
-        return try await rows.all().map(mapping)
+        return try await rows.all().compactMap(mapping)
     }
     
     func runQuery<T>(_ query: String, column: String) async throws -> T? where T: Decodable {
@@ -112,34 +110,48 @@ class SQLiteManager: ObservableObject {
         return try await handler(rows.all())
     }
     
+    private func loadModelCacheAndMetadata (from url: URL) async throws {
+        self.metadata = try NSPersistentStoreCoordinator.metadataForPersistentStore(
+            ofType: NSSQLiteStoreType,
+            at: url,
+            options: nil
+        )
+
+        let query = "SELECT Z_CONTENT FROM Z_MODELCACHE"
+        let data =  try await self.runQuery(query, handler: { rows in
+            do  {
+                let data = try rows.first?.decode(column: "Z_CONTENT", as: Data.self)
+                     
+                    //return data
+                let modelData = NSData(data: data!)
+                return try? modelData.decompressed(using: .zlib) as Data
+            } catch {
+                print("Can't decode model cache: \(error.localizedDescription)")
+            }
+                
+            return nil
+        })
+        
+        let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data!)
+        unarchiver.requiresSecureCoding = false
+        
+        self.model = unarchiver.decodeObject(of: NSManagedObjectModel.self, forKey: NSKeyedArchiveRootObjectKey)
+    }
+    
+    @MainActor
     private func setDisplayMode() async throws {
         if openAsSQLite {
-            await MainActor.run {
-                self.displayMode = .SQLite
-            }
+            self.displayMode = .SQLite
         } else {
-            let query = """
-                        SELECT COUNT(*) as rowCount 
-                        FROM sqlite_master 
-                        WHERE type='table' AND name='Z_PRIMARYKEY'
-                        """
-            let count = try await runQuery(query, column: "rowCount") ?? 0
-            if count > 0 {
-                let tableNames = try await runQuery("SELECT Z_NAME FROM Z_PRIMARYKEY") { row in
-                    try row.decode(column: "Z_NAME", as: String.self)
-                }
-                
-                await MainActor.run {
-                    if SystemTables.allCases.contains(where: { tableNames.contains($0.rawValue) }) {
-                        self.displayMode = .SwiftData
-                    } else {
-                        self.displayMode = .CoreData
-                    }
-                }
+            guard let version = metadata?["NSPersistenceFrameworkVersion"] as? Int else {
+                self.displayMode = .SQLite
+                return
+            }
+            
+            if version > 800 {
+                self.displayMode = .SwiftData
             } else {
-                await MainActor.run {
-                    self.displayMode = .SQLite
-                }
+                self.displayMode = .CoreData
             }
         }
     }
